@@ -23,11 +23,16 @@ export default function ApiDoc() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const uid = user.uid;
         try {
           setLoggedIn(true);
-          // Get the API docs with the user's UID as a query parameter
-          const docsResp = await fetch(`/api/docs?uid=${uid}`);
+          const idToken = await user.getIdToken(true);
+          // Fetch the API documentation
+          const docsResp = await fetch(`/api/docs`,{
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
           if (docsResp.ok) {
             const swaggerData = await docsResp.json();
             setSwaggerConfig(swaggerData);

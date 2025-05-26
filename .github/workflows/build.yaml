@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_VERSION: 18.x
+      GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,6 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
+          
 
       - name: Install dependencies
         run: npm install

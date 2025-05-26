@@ -110,10 +110,12 @@ const Leads: React.FC = () => {
       if (selectedLead.id) {
         // Update lead in Firestore
         try {
+          const idToken = await auth.currentUser?.getIdToken(true);
           await fetch(`/api/leads/?id=${selectedLead.id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+               Authorisation: `Bearer ${idToken}`,
             },
             body: JSON.stringify(leadData),
           });
@@ -127,10 +129,12 @@ const Leads: React.FC = () => {
       } else {
         // Add new lead to Firestore
         try {
+          const idToken = await auth.currentUser?.getIdToken(true);
           await fetch("/api/leads", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+               Authorisation: `Bearer ${idToken}`,
             },
             body: JSON.stringify(leadData),
           });
@@ -161,8 +165,12 @@ const Leads: React.FC = () => {
 
   const handleDeleteLead = async (id: string) => {
     try {
+      const idToken = await auth.currentUser?.getIdToken(true);
       await fetch(`/api/leads/?id=${id}`, {
         method: "DELETE",
+        headers: {
+            Authorisation: `Bearer ${idToken}`,
+          },
       });
       alert("Lead deleted successfully");
       await fetchLeads(); // Refresh leads after deleting

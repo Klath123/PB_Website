@@ -133,10 +133,12 @@ export default function Members() {
       if (newMember.id) {
         // Update member in Firestore
         try {
+          const idToken = await auth.currentUser?.getIdToken(true);
           const response = await fetch(`/api/membersData`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
             },
             body: JSON.stringify(memberData),
           });
@@ -157,10 +159,12 @@ export default function Members() {
       } else {
         // Add new member to Firestore
         try {
+          const idToken = await auth.currentUser?.getIdToken(true);
           const response = await fetch("/api/membersData", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
             },
             body: JSON.stringify(memberData),
           });
@@ -213,10 +217,12 @@ export default function Members() {
 
   const handleDeleteMember = async (id: string) => {
     try {
+      const idToken = await auth.currentUser?.getIdToken(true);
       const response = await fetch("/api/membersData", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({ id }),
       });

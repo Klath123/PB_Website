@@ -165,8 +165,12 @@ export default function AchievementsPage() {
             .filter(ach => ach && ach.trim() !== "")
         )
       );
-
-      const response = await axios.post("/api/achievements", formData);
+      const idToken = await auth.currentUser?.getIdToken(true);
+      const response = await axios.post("/api/achievements", formData,{
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
       
       // Validate response data
       if (response.data && response.data.data) {
@@ -250,7 +254,12 @@ export default function AchievementsPage() {
       }
   
       console.log("Submitting edit form...");
-      const response = await axios.put("/api/achievements", formData);
+      const idToken = await auth.currentUser?.getIdToken(true);
+      const response = await axios.put("/api/achievements", formData,{
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
       
       if (response.data && response.data.data) {
         // Update the achievers list with the edited data
@@ -285,7 +294,12 @@ export default function AchievementsPage() {
     }
 
     try {
-      const response = await axios.delete(`/api/achievements?email=${encodeURIComponent(deleteConfirmEmail)}`);
+      const idToken = await auth.currentUser?.getIdToken(true);
+      const response = await axios.delete(`/api/achievements?email=${encodeURIComponent(deleteConfirmEmail)}`,{
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
       
       if (response.data && response.data.message) {
         // Remove the deleted item from the achievements list

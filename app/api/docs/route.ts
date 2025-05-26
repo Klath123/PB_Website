@@ -2,33 +2,38 @@ import { db } from "@/Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { getApiDocs } from '@/lib/swagger';
 import { NextResponse } from 'next/server';
+import { verifyToken } from "@/utils/verifyToken";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     // Get the UID from the query parameters
-    const { searchParams } = new URL(request.url);
-    const uid = searchParams.get('uid');
+    // const { searchParams } = new URL(request.url);
+    // const uid = searchParams.get('uid');
 
-    if (!uid) {
-      return NextResponse.json(
-        { error: 'No user ID provided' },
-        { status: 401 }
-      );
-    }
+    // if (!uid) {
+    //   return NextResponse.json(
+    //     { error: 'No user ID provided' },
+    //     { status: 401 }
+    //   );
+    // }
 
-    // Check admin status
-    const adminDocRef = doc(db, "admin", uid);
-    const adminDocSnap = await getDoc(adminDocRef);
+    // // Check admin status
+    // const adminDocRef = doc(db, "admin", uid);
+    // const adminDocSnap = await getDoc(adminDocRef);
 
-    if (!adminDocSnap) {
-      return NextResponse.json(
-        { error: 'Access denied. Admin privileges required.' },
-        { status: 403 }
-      );
-    }
+    // if (!adminDocSnap) {
+    //   return NextResponse.json(
+    //     { error: 'Access denied. Admin privileges required.' },
+    //     { status: 403 }
+    //   );
+    // }
 
     // If admin, proceed to generate API docs
     const spec = await getApiDocs();

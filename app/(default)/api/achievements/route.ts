@@ -4,6 +4,7 @@ import { cloudinary } from "@/Cloudinary";
 import { Readable } from "stream";
 import { UploadApiResponse } from "cloudinary";
 import connectMongoDB from "@/lib/dbConnect";
+import { verifyToken } from "@/utils/verifyToken";
 /**
  * @swagger
  * /api/achievements:
@@ -233,6 +234,10 @@ import connectMongoDB from "@/lib/dbConnect";
 // POST method: Create or add a new achievement
 export async function POST(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     // Validate request method
     if (request.method !== 'POST') {
       return NextResponse.json(
@@ -450,6 +455,10 @@ export async function GET(request: NextRequest) {
 // PUT method: Update an existing achievement based on email
 export async function PUT(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     // Validate request method
     if (request.method !== 'PUT') {
       return NextResponse.json(
@@ -591,6 +600,10 @@ export async function PUT(request: Request) {
 // DELETE method: Delete an achievement based on email
 export async function DELETE(request: NextRequest) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     // Validate request method
     if (request.method !== 'DELETE') {
       return NextResponse.json(

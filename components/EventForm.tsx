@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useStore } from "@/lib/zustand/store";
+import { auth } from "@/Firebase";
 
 interface EventFormProps {
   refreshEvents?: () => Promise<void>; // Optional refresh function
@@ -62,10 +63,12 @@ const EventForm: React.FC<EventFormProps> = ({ refreshEvents }) => {
       return;
     }
     try {
+       const idToken = await auth.currentUser?.getIdToken(true);
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+           Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           eventName,

@@ -4,6 +4,7 @@ import connectMongoDB from "@/lib/dbConnect";
 import Membersmodel from "@/models/Members";
 import { ObjectId } from "mongodb";
 import { convertToWebP } from "@/utils/webpImages";
+import { verifyToken } from "@/utils/verifyToken";
 /**
  * @swagger
  * /api/members:
@@ -155,6 +156,10 @@ export async function GET() {
  */
 export async function POST(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     const data = await request.json();
 
     const { name } = data;
@@ -272,6 +277,10 @@ export async function POST(request: Request) {
 // PUT handler to update an existing member
 export async function PUT(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+        if (!authResult.authorized) {
+            return authResult.response;
+        }
     const data = await request.json();
     const { id, name } = data;
     const newid: Object = new ObjectId(id);

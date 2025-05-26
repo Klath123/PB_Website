@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useStore } from "@/lib/zustand/store";
+import { auth } from "@/Firebase";
 
 interface EventUpdateFormProps {
   eventId: string;
@@ -85,10 +86,12 @@ const EventUpdateForm = ({
     }
 
     try {
+      const idToken = await auth.currentUser?.getIdToken(true);
       const response = await fetch(`/api/events/?eventid=${eventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           eventId,

@@ -77,8 +77,12 @@ const EventsPage = () => {
   // Deleting an event
   const deleteEvent = async (eventId: string, event: any) => {
     try {
+       const idToken = await auth.currentUser?.getIdToken(true);
       await fetch(`/api/events/?eventid=${eventId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+         },
       });
       setEvents((prevEvents) =>
         prevEvents.filter((event) => event.id !== eventId)

@@ -3,6 +3,7 @@ import Eventmodel from "@/models/Events";
 import connectMongoDB from "@/lib/dbConnect";
 import { v4 as uuidv4 } from "uuid";
 import { cloudinary } from '@/Cloudinary';
+import { verifyToken } from "@/utils/verifyToken";
 /**
  * @swagger
  * /api/events:
@@ -235,6 +236,10 @@ export async function GET(request: Request) {
 // POST request
 export async function POST(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+    if (!authResult.authorized) {
+        return authResult.response;
+    }
     const newEvent = await request.json();
     const validationErrors = validateEvent(newEvent);
     if (validationErrors.length > 0) {
@@ -290,6 +295,10 @@ export async function POST(request: Request) {
 // PUT request
 export async function PUT(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+        if (!authResult.authorized) {
+            return authResult.response;
+        }
     const { searchParams } = new URL(request.url);
     const eventid = searchParams.get("eventid");
     console.log(eventid);
@@ -345,6 +354,10 @@ export async function PUT(request: Request) {
 // DELETE request
 export async function DELETE(request: Request) {
   try {
+    const authResult = await verifyToken(request);
+        if (!authResult.authorized) {
+            return authResult.response;
+        }
     const { searchParams } = new URL(request.url);
     const eventid = searchParams.get("eventid");
 
